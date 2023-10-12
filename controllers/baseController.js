@@ -83,8 +83,8 @@ exports.getOne = Model => async (req, res, next) => {
 exports.getAll = (Model) => async (req, res, next) => {
     try {
         const features = new APIFeatures(Model.find(), req.query)
-            .sort()
-            .paginate();
+            .sort();
+            //.paginate();
 
          const doc = await features.query;
 
