@@ -20,7 +20,7 @@ const createToken = id => {
 
 exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, deviceID } = req.body;
 
     // check if email and password exist
     if (!email || !password) {
@@ -45,6 +45,11 @@ exports.login = async (req, res, next) => {
         next,
       );
     }
+
+    await User.findByIdAndUpdate(user.id, {deviceToken: deviceID}, {
+      new: true,
+      runValidators: true
+    });
 
     // All correct, send jwt to client
     const token = createToken(user.id);

@@ -6,11 +6,12 @@
   "scripts": {
     "debug": "ndb server.js",
     "startf": "pm2-runtime start ecosystem.config.js --env production",
-    "start": "node server.js"
+    "start": "pm2-runtime start ecosystem.config.js --env production"
   },
   "author": "Nurudeen Ahmed",
   "license": "ISC",
   "dependencies": {
+    "@onesignal/node-onesignal": "^2.0.1-beta2",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
