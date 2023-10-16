@@ -74,6 +74,9 @@ exports.order = async (req, res, next) => {
       owner: req.user._id,
     });
 
+    const owner = await User.findById(req.user._id);
+    pushController.pushNotification(owner.deviceToken, 'Order Created', `Your Order (${order.category}) has been created`);
+
     res.status(201).json({
       status: "success",
       data: {
