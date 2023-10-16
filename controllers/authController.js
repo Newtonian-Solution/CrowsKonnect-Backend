@@ -46,7 +46,7 @@ exports.login = async (req, res, next) => {
       );
     }
 
-    await User.findByIdAndUpdate(user.id, {deviceToken: deviceID}, {
+    const data = await User.findByIdAndUpdate(user._id, {deviceToken: deviceID}, {
       new: true,
       runValidators: true
     });
@@ -61,7 +61,7 @@ exports.login = async (req, res, next) => {
       status: "success",
       token,
       data: {
-        user,
+        data,
       },
     });
   } catch (err) {

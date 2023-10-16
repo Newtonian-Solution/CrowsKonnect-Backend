@@ -6,7 +6,7 @@
   "scripts": {
     "debug": "ndb server.js",
     "startf": "pm2-runtime start ecosystem.config.js --env production",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "Nurudeen Ahmed",
   "license": "ISC",
