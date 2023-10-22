@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
-  nin: {
+  bvn: {
     type: String,
     default: ""
   },
@@ -52,10 +52,17 @@ const userSchema = new mongoose.Schema({
     enum: ["admin", "user"],
     default: "user",
   },
+  pendingBalance: {
+    type: String,
+    default: '0'
+  },
+  balance: {
+    type: String,
+    default: '0'
+  },
   active: {
     type: Boolean,
     default: false,
-    select: true,
   },
 });
 

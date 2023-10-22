@@ -20,11 +20,11 @@ const orderSchema = new mongoose.Schema({
     required: [true, "Please fill the package weight"],
   },
   pickUpPoint: {
-    type: String,
+    type: Object,
     required: [true, "Please fill your pickup point"],
   },
   destination: {
-    type: String,
+    type: Object,
     required: [true, "Please fill order Destination"],
   },
   receiverName: {

@@ -6,18 +6,20 @@
   "scripts": {
     "debug": "ndb server.js",
     "startf": "pm2-runtime start ecosystem.config.js --env production",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "Nurudeen Ahmed",
   "license": "ISC",
   "dependencies": {
     "@onesignal/node-onesignal": "^2.0.1-beta2",
+    "@vonage/server-sdk": "^3.10.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-mongo-sanitize": "^1.3.2",
     "express-rate-limit": "^5.0.0",
+    "flutterwave-node-v3": "^1.1.6",
     "helmet": "^3.21.2",
     "hpp": "^0.2.2",
     "jsonwebtoken": "^8.5.1",

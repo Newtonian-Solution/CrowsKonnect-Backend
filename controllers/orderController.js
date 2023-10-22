@@ -11,7 +11,15 @@ const base = require('./baseController');
 exports.orders = base.getAll(Order);
 
 exports.getOrder = base.getOne(Order);
-
+exports.deleteAll = async (req, res, next) => {
+  try {
+    await Order.deleteMany({}).then(function(){
+      res.send('Deleted')
+    })
+  } catch(e) {
+    res.send('45')
+  }
+}
 exports.applyOrder = async (req, res, next) => {
   try {
     const doc = await Order.findByIdAndUpdate(req.params.id, req.body, {
@@ -62,6 +70,7 @@ exports.applyOrder = async (req, res, next) => {
 
 exports.order = async (req, res, next) => {
   try {
+    console.log(req.body)
     const order = await Order.create({
       type: req.body.type,
       category: req.body.category,
