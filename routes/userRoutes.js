@@ -32,7 +32,8 @@ router.post('/order', orderController.order);
 router.post('/order/:id', orderController.applyOrder);
 
 // User Routes
-router.get('/:id', smsController.sendSMS); //userController.getUser);
+router.get('/:id', userController.getUser);
+router.post('/wallet/:id', userController.updateUser);
 
 router.delete('/deleteMe', userController.deleteMe);
 
