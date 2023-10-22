@@ -38,15 +38,6 @@ router.post('/wallet/:id', userController.updateUser);
 router.delete('/deleteMe', userController.deleteMe);
 
 // Only admin have permission to access for the below APIs 
-router.use(authController.restrictTo('admin'));
 
-router
-    .route('/')
-    .get(userController.getAllUsers);
-
-
-router
-    .patch(userController.updateUser)
-    .delete(userController.deleteUser);
 
 module.exports = router;
