@@ -48,6 +48,10 @@ const orderSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  dateAdded: {
+    type: Date,
+    default: new Date(),
+  },
   active: {
     type: Boolean,
     default: true,

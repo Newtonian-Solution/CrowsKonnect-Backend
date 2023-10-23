@@ -53,12 +53,12 @@ const userSchema = new mongoose.Schema({
     default: "user",
   },
   pendingBalance: {
-    type: String,
-    default: '0'
+    type: Number,
+    default: 0
   },
   balance: {
-    type: String,
-    default: '0'
+    type: Number,
+    default: 0
   },
   active: {
     type: Boolean,
