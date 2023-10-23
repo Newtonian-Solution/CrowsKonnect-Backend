@@ -70,7 +70,6 @@ exports.applyOrder = async (req, res, next) => {
 
 exports.order = async (req, res, next) => {
   try {
-    console.log(req.body)
     const order = await Order.create({
       type: req.body.type,
       category: req.body.category,
@@ -82,6 +81,7 @@ exports.order = async (req, res, next) => {
       receiverNumber: req.body.receiverNo,
       owner: req.user._id,
     });
+    await User.updateOne({ _id: req.user._id }, { $inc: { balance: -Number(req.body.amount) } });
 
     const owner = await User.findById(req.user._id);
     pushController.pushNotification(owner.deviceToken, 'Order Created', `Your Order (${order.category}) has been created`);

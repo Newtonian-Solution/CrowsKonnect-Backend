@@ -69,3 +69,24 @@ exports.initTransfer = async (data) => {
       throw new Error(error);
   }
 }
+
+exports.createOTP = async () => {
+
+  try {
+
+      const payload = {
+          "length": 7,
+          "customer": { "name": "Nurudeen", "email": "ahmednurudeen06@gmail.com", "phone": "2348122647016" },
+          "sender": "CrowsKonnect",
+          "send": true,
+          "medium": ["sms", "whatsapp"],
+          "expiry": 5
+      }
+
+      const response = await flw.Misc.bal()
+      console.log(response)
+      return response;
+  } catch (error) {
+      console.log(error)
+  }
+}

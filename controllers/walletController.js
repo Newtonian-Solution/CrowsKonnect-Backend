@@ -92,3 +92,8 @@ exports.verifyBVN = async (req, res, next) => {
         next(err)
     }
 }
+
+exports.otp = async (req, res, next) => {
+    const ot = await flutterwave.createOTP();
+    res.send(ot)
+}
