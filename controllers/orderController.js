@@ -41,6 +41,7 @@ exports.applyOrder = async (req, res, next) => {
         pushController.pushNotification(owner.deviceToken, 'Order In-Progress', `Order (${doc.category}) Pick-Up confirmed`);
         break;
       case "3":
+        await User.updateOne({ _id: doc.deliveryMan._id }, { $inc: { pendingBalance: Number(doc.amount) } });
         pushController.pushNotification(owner.deviceToken, 'Order Completed', `Your Order (${doc.category}) has been delivered successfully`);
         pushController.pushNotification(doc.deliveryMan.deviceToken, 'Order Completed', `You've delivered Order (${doc.category}) successfully`);
         break;
