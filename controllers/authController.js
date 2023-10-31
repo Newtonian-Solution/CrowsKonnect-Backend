@@ -4,7 +4,8 @@ const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const path = require("path");
 const fs = require("fs/promises");
-const base = require("./baseController");
+const emailController = require("./emailController");
+
 
 const createToken = id => {
   return jwt.sign(
@@ -81,6 +82,7 @@ exports.signup = async (req, res, next) => {
     });
 
     const token = createToken(user.id);
+    await emailController.sendWelcome(req.body.email);
 
     user.password = undefined;
 

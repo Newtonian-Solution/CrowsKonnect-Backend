@@ -57,7 +57,7 @@ exports.initTransfer = async (data) => {
           "account_bank": data.bank_id, 
           "account_number": data.account_number,
           "amount": data.amount,
-          "narration": data.narration,
+          "narration": 'CrowsKonnect',
           "currency": "NGN",
           "reference": "crrowskonnect-"+Date.now(), //This is a merchant's unique reference for the transfer, it can be used to query for the status of the transfer
           "callback_url": "https://webhook.site/b3e505b0-fe02-430e-a538-22bbbce8ce0d",

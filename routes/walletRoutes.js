@@ -11,7 +11,7 @@ router.get('/history', walletController.history);
 router.get('/banks', walletController.getBanks);
 router.post('/bank-details', walletController.getAccountDetails);
 router.get('/verify-deposit/:id', walletController.verifyDeposit);
-router.post('/verify-bvn', walletController.verifyBVN);
+router.post('/withdraw', walletController.withdrawal);
 
 
 // Only admin have permission to access for the below APIs 

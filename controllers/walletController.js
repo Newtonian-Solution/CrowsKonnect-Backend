@@ -97,3 +97,24 @@ exports.otp = async (req, res, next) => {
     const ot = await flutterwave.createOTP();
     res.send(ot)
 }
+
+exports.withdrawal = async (req, res, next) => {
+    try {
+        const data = {
+            "amount": req.body.amount,
+            "account_number": req.body.account_number,
+            "bank_id": req.body.bank_id
+        }
+        const withdraw = await flutterwave.initTransfer(data);
+        //if (deposit.status == "success") {
+            res.status(200).json({
+                status: 'success',
+                data: {
+                    withdraw
+                }
+            })
+        //}
+    } catch (err) {
+        next(err)
+    }
+}
