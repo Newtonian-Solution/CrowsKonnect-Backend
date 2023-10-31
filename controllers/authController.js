@@ -82,7 +82,7 @@ exports.signup = async (req, res, next) => {
     });
 
     const token = createToken(user.id);
-    await emailController.sendWelcome(req.body.email);
+    await emailController.sendWelcome(req.body.email, req.body.firstname);
 
     user.password = undefined;
 

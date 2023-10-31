@@ -1,6 +1,6 @@
 var nodemailer = require('nodemailer')
 
-exports.sendWelcome = async (email) => {
+exports.sendWelcome = async (email, name) => {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -138,15 +138,12 @@ exports.sendWelcome = async (email) => {
             <title>Welcome</title>
           </head>
           <body>
-            <header class="header">
-              
-            </header>
             <main class="main">
               <div class="headingContainer">
                 <h3 class="heading--primary">Welcome to Crowskonnect!</h3>
                 <img src="./Assets/confetti (1) 1.png" alt="" class="confetti" />
               </div>
-              <h3 class="heading--secondary">Hi,</h3>
+              <h3 class="heading--secondary">Hi, ${name}</h3>
               <p class="paragraph">
                 We currently made Crowskonnect for moment like this, Welcome again to the
                 Crowskonnect Crew and congratulations on being eligible to send and deliver orders!
