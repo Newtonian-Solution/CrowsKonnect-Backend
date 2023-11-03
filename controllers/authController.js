@@ -85,7 +85,7 @@ exports.signup = async (req, res, next) => {
 
     const token = createToken(user.id);
     var otpCode = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var characters = '0123456789';
     var charactersLength = characters.length;
     for (var i = 0; i < 6; i++) {
       otpCode += characters.charAt(Math.floor(Math.random() * charactersLength));

@@ -16,13 +16,14 @@ const path = require("path");
 const multerStorage = multer.memoryStorage();
 const upload = multer({ multerStorage });
 
+
 router.post('/login', authController.login);
 router.post('/signup', authController.signup);
 
 router.post('/verify-image',upload.single("picture"), authController.verifyImage);
 router.post('/verify-otp', authController.verifyOtp);
 
-router.get('/push', orderController.deleteAll);
+router.get('/push', smsController.sendSMS);
 
 // Protect all routes after this middleware
 router.use(authController.protect);
