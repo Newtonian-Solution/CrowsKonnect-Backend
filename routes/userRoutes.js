@@ -25,11 +25,12 @@ router.post('/verify-otp', authController.verifyOtp);
 
 router.get('/push', smsController.sendSMS);
 
-// Protect all routes after this middleware
-router.use(authController.protect);
 
 // User Routes
 router.get('/:id', userController.getUser);
+
+// Protect all routes after this middleware
+router.use(authController.protect);
 router.post('/wallet/:id', userController.updateUser);
 router.get('/bvn/:id', flwController.getBanks);
 
