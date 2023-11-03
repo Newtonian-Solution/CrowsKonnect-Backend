@@ -35,6 +35,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please fill Receiver's Number"],
   },
+  verifyCode: {
+    type: String,
+    default: "",
+  },
   deliveryMan: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

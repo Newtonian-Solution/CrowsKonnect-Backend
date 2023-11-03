@@ -14,7 +14,7 @@ exports.sendSMS = async () => {
   var data = new FormData();
   data.append('token', '44TIOwlHjVLTkaLZeXeJRfat7VnaBGaJldGt6Ex3mcmJ27JB3p');
   data.append('sender', 'Crowskonnet');
-  data.append('to', '08122647016');
+  data.append('to', '08139148223');
   data.append('message', text);
   data.append('type', '0');
   data.append('routing', '2');
