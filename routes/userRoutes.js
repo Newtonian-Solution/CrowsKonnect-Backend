@@ -8,12 +8,13 @@ const flwController = require('../utils/flwFeatures');
 const smsController = require('../controllers/smsController')
 const multer = require("multer");
 const path = require("path");
-let storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../upload'));
-    },
-    });
-const upload = multer({ storage });
+// let storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, path.join(__dirname, '../upload'));
+//     },
+//     });
+const multerStorage = multer.memoryStorage();
+const upload = multer({ multerStorage });
 
 router.post('/login', authController.login);
 router.post('/signup', authController.signup);

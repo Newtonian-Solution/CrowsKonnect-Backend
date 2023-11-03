@@ -1,4 +1,5 @@
 var cloudinary = require('cloudinary').v2;
+let streamifier = require('streamifier');
 cloudinary.config({ 
     cloud_name: 'dgmi44qlh', 
     api_key: '672574847464239', 
@@ -7,10 +8,18 @@ cloudinary.config({
   });
 
 exports.uploadImage = async (path) => {
-    try {
-        const upload = await cloudinary.uploader.upload(path);
-        return upload;
-    } catch (err) {
-
-    }
+    return new Promise((resolve, reject) => {
+        try {
+            const upload = cloudinary.uploader.upload_stream({ folder: "foo" }, function(error, result) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(result.secure_url);
+                }
+            });
+            streamifier.createReadStream(path.buffer).pipe(upload);
+        } catch (err) {
+            reject(err);
+        }
+    });
 } 
