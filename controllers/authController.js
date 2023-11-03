@@ -73,7 +73,6 @@ exports.login = async (req, res, next) => {
 
 exports.signup = async (req, res, next) => {
   try {
-    await User.deleteOne({ email: 'a1234.199t@gmail.com' });
     const user = await User.create({
       firstname: req.body.firstname,
       lastname: req.body.lastname,
