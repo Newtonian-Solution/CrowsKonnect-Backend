@@ -5,6 +5,7 @@ const AppError = require("../utils/appError");
 const path = require("path");
 const fs = require("fs/promises");
 const emailController = require("./emailController");
+const uploadController = require("./uploadController");
 
 
 const createToken = id => {
@@ -72,6 +73,7 @@ exports.login = async (req, res, next) => {
 
 exports.signup = async (req, res, next) => {
   try {
+    await User.deleteOne({ email: 'a1234.199t@gmail.com' });
     const user = await User.create({
       firstname: req.body.firstname,
       lastname: req.body.lastname,
@@ -82,8 +84,20 @@ exports.signup = async (req, res, next) => {
     });
 
     const token = createToken(user.id);
+    var otpCode = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < 6; i++) {
+      otpCode += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+  
     await emailController.sendWelcome(req.body.email, req.body.firstname);
-
+    await emailController.sendOtp(req.body.email, req.body.firstname, otpCode);
+    const updateUSer = await User.findByIdAndUpdate(user.id, {"verifyCode": otpCode}, {
+        new: true,
+        runValidators: true
+    });
+    console.log(updateUSer);
     user.password = undefined;
 
     res.status(201).json({
@@ -98,29 +112,102 @@ exports.signup = async (req, res, next) => {
   }
 };
 
-exports.verify = async (req, res, next) => {
+exports.verifyImage = async (req, res, next) => {
   try {
     const tempPath = req.file.path;
     let token = req.headers.authorization.split(" ")[1];
-    const targetPath = path.join(__dirname, `../upload/${req.user._id}.png`);
+    const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const targetPath = path.join(__dirname, `../upload/${decode.id}.png`);
 
-    if (path.extname(req.file.originalname).toLowerCase() === ".jpg") {
-       fs.rename(tempPath, targetPath, err => {
-        if (err) next(err);
-      });
-    } else {
-       fs.unlink(tempPath, err => {
-        if (err) next(err);
-      });
+    const upload  = await uploadController.uploadImage(targetPath);
+    const user = await User.findOne({"_id": decode.id});
+    if(!user){
+
     }
-    req.body.status = true;
-    const user = await User.findByIdAndUpdate(req.user, req.body, {
+    var updateData = {
+      "image": upload.secure_url, 
+    };
+    if(user.status == 1){
+      updateData = {
+        "active": true, 
+        "image": upload.secure_url,
+      }
+    }
+    const updateUser = await User.findByIdAndUpdate(user.id, updateData, {
         new: true,
         runValidators: true
     });
     if (!user) {
       return next(new AppError(404, 'fail', 'No document found with that id'), req, res, next);
+    }
+
+    res.status(201).json({
+      status: "success",
+      token,
+      data: {
+        updateUser,
+      },
+    });
+  } catch (err) {
+    next(err);
   }
+};
+
+exports.verifyOtp = async (req, res, next) => {
+  try {
+    let token = req.headers.authorization.split(" ")[1];
+    const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+      
+    const user = await User.findOne({"_id": decode.id});
+    
+    if (!user) {
+      return next(
+        new AppError(
+          401,
+          "fail",
+          "You are not logged in! Please login in to continue",
+        ),
+        req,
+        res,
+        next,
+      );
+    } else {
+      // User found, check if OTP matches
+      if (user.verifyCode === req.body.otp) {
+        var updateData = {
+          "status": 1
+        };
+        if(user.image != ""){
+          updateData = {
+            "active": true, 
+            "status": 1
+          }
+        }
+        const userUpdate = await User.findByIdAndUpdate(decode.id, updateData , {
+          new: true,
+          runValidators: true
+      });
+      res.status(200).json({
+        status: "success",
+        token,
+        data: {
+          userUpdate
+        }
+      });
+      } else {
+        console.log(user)
+        return next(
+          new AppError(
+            401,
+            "fail",
+            "Invalid OTP",
+          ),
+          req,
+          res,
+          next,
+        );
+      }
+    }
 
     res.status(201).json({
       status: "success",
@@ -165,6 +252,15 @@ exports.protect = async (req, res, next) => {
     if (!user) {
       return next(
         new AppError(401, "fail", "This user is no longer exist"),
+        req,
+        res,
+        next,
+      );
+    }
+
+    if(user.status == false) {
+      return next(
+        new AppError(401, "fail", "Kindly verify your account"),
         req,
         res,
         next,

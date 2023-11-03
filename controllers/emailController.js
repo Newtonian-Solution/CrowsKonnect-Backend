@@ -1,13 +1,15 @@
 var nodemailer = require('nodemailer')
+const User = require("../models/userModel");
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'eminentnewtonian@gmail.com',
+        pass: 'mehs wtcx bwhg kbtx'
+    }
+})
 
 exports.sendWelcome = async (email, name) => {
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'eminentnewtonian@gmail.com',
-            pass: 'mehs wtcx bwhg kbtx'
-        }
-    })
+
     var mail = {
         from:'CrowsKonnect admin@crowskonnect.com',
         to: email,
@@ -202,4 +204,25 @@ exports.sendWelcome = async (email, name) => {
             console.log(info.response)
         }
     })
+}
+
+exports.sendOtp = async (email, name, otp) => {
+  
+  var mail = {
+    from:'CrowsKonnect admin@crowskonnect.com',
+    to: email,
+    subject:'Email Verification',
+    html: `
+    Dear ${name},
+    <br/>
+    Your Email Verification code is ${otp}
+    `
+}
+transporter.sendMail(mail,(error,info)=>{
+    if(error){
+        console.log(error)
+    }else{
+        console.log(info.response)
+    }
+})
 }

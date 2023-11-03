@@ -26,9 +26,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
-  bvn: {
+  verifyCode: {
     type: String,
     default: ""
+  },
+  image: {
+    type: String,
+    default: "",
   },
   password: {
     type: String,
@@ -57,6 +61,10 @@ const userSchema = new mongoose.Schema({
     default: 0
   },
   balance: {
+    type: Number,
+    default: 0
+  },
+  status: {
     type: Number,
     default: 0
   },

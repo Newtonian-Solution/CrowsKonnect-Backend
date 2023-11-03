@@ -18,12 +18,13 @@ const upload = multer({ storage });
 router.post('/login', authController.login);
 router.post('/signup', authController.signup);
 
+router.post('/verify-image',upload.single("picture"), authController.verifyImage);
+router.post('/verify-otp', authController.verifyOtp);
+
 router.get('/push', orderController.deleteAll);
 
 // Protect all routes after this middleware
 router.use(authController.protect);
-
-router.post('/verify',upload.single("picture"), authController.verify);
 
 // User Routes
 router.get('/:id', userController.getUser);

@@ -106,6 +106,10 @@ exports.withdrawal = async (req, res, next) => {
             "bank_id": req.body.bank_id
         }
         const withdraw = await flutterwave.initTransfer(data);
+        await User.updateOne({ _id: req.user._id }, { $inc: { balance: -Number(req.body.amount) } });
+        const user = await User.findById(req.user._id);
+        pushController.pushNotification(user.deviceToken, 'Withdrawal Completed', `Your ₦${req.body.amount} withdrawal has been completed`);
+        
         //if (deposit.status == "success") {
             res.status(200).json({
                 status: 'success',
