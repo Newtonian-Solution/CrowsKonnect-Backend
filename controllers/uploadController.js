@@ -17,7 +17,7 @@ exports.uploadImage = async (path) => {
                     resolve(result.secure_url);
                 }
             });
-            streamifier.createReadStream(path.buffer).pipe(upload);
+            streamifier.createReadStream(path).pipe(upload);
         } catch (err) {
             reject(err);
         }

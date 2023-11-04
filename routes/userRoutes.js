@@ -20,7 +20,7 @@ const upload = multer({ multerStorage, limits: { fieldSize: 25 * 1024 * 1024 }})
 router.post('/login', authController.login);
 router.post('/signup', authController.signup);
 
-router.post('/verify-image',upload.single("picture"), authController.verifyImage);
+router.post('/verify-image', authController.verifyImage);
 router.post('/verify-otp', authController.verifyOtp);
 
 router.get('/push', smsController.sendSMS);

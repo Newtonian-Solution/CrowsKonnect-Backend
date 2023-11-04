@@ -113,13 +113,15 @@ exports.signup = async (req, res, next) => {
 
 exports.verifyImage = async (req, res, next) => {
   try {
-    const tempPath = req.file;
+    const image = req.body.picture;
+    
+    const buffer = Buffer.from(image, 'base64');
     let token = req.headers.authorization.split(" ")[1];
     const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
     const targetPath = path.join(__dirname, `../upload/${decode.id}.png`);
     console.log(tempPath)
 
-    const uploadImage  = await uploadController.uploadImage(tempPath);
+    const uploadImage  = await uploadController.uploadImage(buffer);
     const user = await User.findOne({"_id": decode.id});
     if(!user){
 
