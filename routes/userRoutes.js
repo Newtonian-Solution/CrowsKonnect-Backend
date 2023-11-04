@@ -14,7 +14,7 @@ const path = require("path");
 //     },
 //     });
 const multerStorage = multer.memoryStorage();
-const upload = multer({ multerStorage });
+const upload = multer({ multerStorage, limits: { fieldSize: 25 * 1024 * 1024 }});
 
 
 router.post('/login', authController.login);

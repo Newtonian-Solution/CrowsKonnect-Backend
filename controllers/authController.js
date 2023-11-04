@@ -258,7 +258,7 @@ exports.protect = async (req, res, next) => {
       );
     }
 
-    if(user.status == false) {
+    if(user.active == false) {
       return next(
         new AppError(401, "fail", "Kindly verify your account"),
         req,
