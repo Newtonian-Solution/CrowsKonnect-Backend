@@ -77,7 +77,7 @@ exports.signup = async (req, res, next) => {
       "email": req.body.email,
     });
     if(checkUser) {
-      next(new AppError(404, 'fail', 'User Exists!'), req, res, next);
+      next(new AppError(401, 'fail', 'Email Address Exists!'), req, res, next);
     }
     const user = await User.create({
       firstname: req.body.firstname,
