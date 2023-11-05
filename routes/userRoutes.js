@@ -30,7 +30,7 @@ router.get('/push', smsController.sendSMS);
 router.get('/:id', userController.getUser);
 
 // Protect all routes after this middleware
-router.use(authController.protect);
+// router.use(authController.protect);
 router.post('/wallet/:id', userController.updateUser);
 router.get('/bvn/:id', flwController.getBanks);
 

@@ -73,6 +73,12 @@ exports.login = async (req, res, next) => {
 
 exports.signup = async (req, res, next) => {
   try {
+    const checkUser = await User.findOne({
+      email,
+    });
+    if(checkUser) {
+      next(new AppError(404, 'fail', 'User Exists!'), req, res, next);
+    }
     const user = await User.create({
       firstname: req.body.firstname,
       lastname: req.body.lastname,
@@ -92,11 +98,10 @@ exports.signup = async (req, res, next) => {
   
     await emailController.sendWelcome(req.body.email, req.body.firstname);
     await emailController.sendOtp(req.body.email, req.body.firstname, otpCode);
-    const updateUSer = await User.findByIdAndUpdate(user.id, {"verifyCode": otpCode}, {
+    await User.findByIdAndUpdate(user.id, {"verifyCode": otpCode}, {
         new: true,
         runValidators: true
     });
-    console.log(updateUSer);
     user.password = undefined;
 
     res.status(201).json({

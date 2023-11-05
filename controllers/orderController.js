@@ -1,10 +1,9 @@
 const { promisify } = require("util");
-const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const pushController = require("./pushNotificationController");
 const AppError = require("../utils/appError");
-const path = require("path");
+const sms = require("./smsController");
 const fs = require("fs/promises");
 const base = require('./baseController');
 
@@ -22,13 +21,16 @@ exports.deleteAll = async (req, res, next) => {
 }
 exports.applyOrder = async (req, res, next) => {
   try {
-    const doc = await Order.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true
-    });
+    var doc;
+    if(req.body.status != '3'){
+      doc = await Order.findByIdAndUpdate(req.params.id, req.body, {
+          new: true,
+          runValidators: true
+      });
+  }
 
     if (!doc) {
-        return next(new AppError(404, 'fail', 'No user found with that id'), req, res, next);
+        return next(new AppError(404, 'fail', 'No order found with that id'), req, res, next);
     }
     
     const owner = await User.findById(doc.owner);
@@ -38,9 +40,13 @@ exports.applyOrder = async (req, res, next) => {
         pushController.pushNotification(owner.deviceToken, 'Order Assigned', `Your Order (${doc.category}) has been assigned`);
         break;
       case "2":
+        await sms.sendSMS(doc, owner.firstname, owner.phoneNumber);
         pushController.pushNotification(owner.deviceToken, 'Order In-Progress', `Order (${doc.category}) Pick-Up confirmed`);
         break;
       case "3":
+        if(doc.verifyCode == req.body.otp){
+          next(new AppError(404, 'fail', 'Incorrect Code!'), req, res, next);
+        }
         await User.updateOne({ _id: doc.deliveryMan._id }, { $inc: { pendingBalance: Number(doc.amount) } });
         pushController.pushNotification(owner.deviceToken, 'Order Completed', `Your Order (${doc.category}) has been delivered successfully`);
         pushController.pushNotification(doc.deliveryMan.deviceToken, 'Order Completed', `You've delivered Order (${doc.category}) successfully`);
@@ -53,9 +59,6 @@ exports.applyOrder = async (req, res, next) => {
         break;
       default:
 
-    }
-    if(req.body.status == "1") {
-      
     }
     res.status(200).json({
         status: 'success',
