@@ -74,7 +74,7 @@ exports.login = async (req, res, next) => {
 exports.signup = async (req, res, next) => {
   try {
     const checkUser = await User.findOne({
-      email,
+      "email": req.body.email,
     });
     if(checkUser) {
       next(new AppError(404, 'fail', 'User Exists!'), req, res, next);
