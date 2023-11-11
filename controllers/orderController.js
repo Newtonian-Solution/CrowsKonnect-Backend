@@ -89,11 +89,26 @@ exports.order = async (req, res, next) => {
 
     const owner = await User.findById(req.user._id);
     pushController.pushNotification(owner.deviceToken, 'Order Created', `Your Order (${order.category}) has been created`);
-
+    const closestUsers = await User.find({
+      location: {
+        $near: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [req.body.pickUp.lng, req.body.pickUp.lat],
+          },
+          $maxDistance: 1000, 
+        },
+      },
+    }).limit(5);
+    if(closestUsers.length > 0){
+      for(let users of closestUsers) {
+        await pushController.pushNotification(users.deviceToken, 'New Order Alert', `A new Order is near you. Open the App to pick it up.`);
+      }
+    }
     res.status(201).json({
       status: "success",
       data: {
-        order,
+        closestUsers,
       },
     });
   } catch (err) {

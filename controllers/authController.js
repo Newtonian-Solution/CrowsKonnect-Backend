@@ -179,7 +179,8 @@ exports.verifyOtp = async (req, res, next) => {
       );
     } else {
       // User found, check if OTP matches
-      if (user.verifyCode === req.body.otp) {
+      var otp = req.body.otp;
+      if (user.verifyCode == otp.trim()) {
         var updateData = {
           "status": 1
         };

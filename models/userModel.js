@@ -72,6 +72,17 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point',
+    },
+    coordinates: {
+      type: [Number],
+      index: '2dsphere',
+    },
+  },
 });
 
 // encrypt the password using 'bcryptjs'
@@ -89,6 +100,7 @@ userSchema.pre("save", async function(next) {
   // this.passwordConfirm = undefined;
   next();
 });
+userSchema.index({ location: '2dsphere' });
 
 // This is Instance Method that is gonna be available on all documents in a certain collection
 userSchema.methods.correctPassword = async function(

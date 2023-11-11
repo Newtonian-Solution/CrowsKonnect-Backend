@@ -24,3 +24,29 @@ exports.getUser = base.getOne(User);
 // Don't update password on this 
 exports.updateUser = base.updateOne(User);
 exports.deleteUser = base.deleteOne(User);
+
+exports.updateUserLocaton = async (req, res, next) => {
+    try {
+        const user = await User.findByIdAndUpdate(
+            req.user._id,
+          {
+            $set: {
+              location: {
+                type: 'Point',
+                coordinates: [req.body.lng, req.body.lat],
+              },
+            },
+          },
+          { new: true }
+        );
+        console.log('User location updated:', user);
+        res.status(201).json({
+            status: "success",
+            data: {
+              user,
+            },
+          });
+      } catch (error) {
+        next(error);
+      }
+}
