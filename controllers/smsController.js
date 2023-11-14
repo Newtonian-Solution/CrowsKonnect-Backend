@@ -8,7 +8,7 @@ exports.sendSMS = async (doc, name, pNo) => {
   for (var i = 0; i < 6; i++) {
     otpCode += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-  await Order.findByIdAndUpdate(req.params.id, {"verifyCode": otpCode}, {
+  await Order.findByIdAndUpdate(doc.id, {"verifyCode": otpCode}, {
     new: true,
     runValidators: true
   });
