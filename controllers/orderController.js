@@ -108,7 +108,7 @@ exports.order = async (req, res, next) => {
     res.status(201).json({
       status: "success",
       data: {
-        closestUsers,
+        order,
       },
     });
   } catch (err) {
