@@ -265,14 +265,14 @@ exports.protect = async (req, res, next) => {
       );
     }
 
-    if(user.active == false) {
-      return next(
-        new AppError(401, "fail", "Kindly verify your account"),
-        req,
-        res,
-        next,
-      );
-    }
+    // if(user.active == false) {
+    //   return next(
+    //     new AppError(401, "fail", "Kindly verify your account"),
+    //     req,
+    //     res,
+    //     next,
+    //   );
+    // }
 
     req.user = user;
     next();
