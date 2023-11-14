@@ -34,28 +34,29 @@ exports.applyOrder = async (req, res, next) => {
     }
     
     const owner = await User.findById(doc.owner);
+    const deliveryman = doc.deliveryMan == ""? null : await User.findById(doc.deliveryMan);
 
     switch(req.body.status) {
       case "1":
         pushController.pushNotification(owner.deviceToken, 'Order Assigned', `Your Order (${doc.category}) has been assigned`);
         break;
       case "2":
-        await sms.sendSMS(doc, owner.firstname, owner.phoneNumber);
+        await sms.sendSMS(doc, owner.firstname, owner.phoneNumber, deliveryman.firstname);
         pushController.pushNotification(owner.deviceToken, 'Order In-Progress', `Order (${doc.category}) Pick-Up confirmed`);
         break;
       case "3":
         if(doc.verifyCode == req.body.otp){
           next(new AppError(404, 'fail', 'Incorrect Code!'), req, res, next);
         }
-        await User.updateOne({ _id: doc.deliveryMan._id }, { $inc: { pendingBalance: Number(doc.amount) } });
+        await User.updateOne({ _id: deliveryman._id }, { $inc: { pendingBalance: Number(doc.amount) } });
         pushController.pushNotification(owner.deviceToken, 'Order Completed', `Your Order (${doc.category}) has been delivered successfully`);
-        pushController.pushNotification(doc.deliveryMan.deviceToken, 'Order Completed', `You've delivered Order (${doc.category}) successfully`);
+        pushController.pushNotification(deliveryman.deviceToken, 'Order Completed', `You've delivered Order (${doc.category}) successfully`);
         break;
       case "4":
         pushController.pushNotification(owner.deviceToken, 'Order Deleted', `Your Order (${doc.category}) has been deleted`);
         break;
       case "5":
-        pushController.pushNotification(doc.deliveryMan.deviceToken, 'Order Assigned', `Kindly confirm Order (${doc.category}) Pick-Up`);
+        pushController.pushNotification(deliveryman.deviceToken, 'Order Assigned', `Kindly confirm Order (${doc.category}) Pick-Up`);
         break;
       default:
 

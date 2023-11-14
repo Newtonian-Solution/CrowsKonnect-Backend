@@ -1,7 +1,7 @@
 var axios = require('axios');
 var Order = require('./../models/orderModel')
 var FormData = require('form-data');
-exports.sendSMS = async (doc, name, pNo) => {
+exports.sendSMS = async (doc, name, pNo, deliveryman) => {
   var otpCode = '';
   var characters = '0123456789';
   var charactersLength = characters.length;
@@ -13,8 +13,8 @@ exports.sendSMS = async (doc, name, pNo) => {
     runValidators: true
   });
   const text = `Hi ${doc.receiverName},
-
-  The one-time password (OTP) to verify an order sent to you is: ${otpCode}.
+  A Package is on the way to YOU.
+  The one-time password (OTP) to claim the ownership is: ${otpCode}.
   
   Please use this OTP to confirm the order.
   Do not disclose to anyone but the Delivery Man.
@@ -22,7 +22,7 @@ exports.sendSMS = async (doc, name, pNo) => {
   Thank you,
   CrowsKonnect Team
   Sender: ${name} ${pNo}
-  Delivery Man: ${doc.deliveryMan.firstname}`
+  Delivery Man: ${deliveryman}`
   var data = new FormData();
   data.append('token', '44TIOwlHjVLTkaLZeXeJRfat7VnaBGaJldGt6Ex3mcmJ27JB3p');
   data.append('sender', 'Crowskonnet');
