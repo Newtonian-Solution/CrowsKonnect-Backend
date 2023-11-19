@@ -6,7 +6,7 @@ const callController = require('../controllers/callController');
 
 // Protect all routes after this middleware
 router.use(authController.protect);
-router.get('/token', callController.createToken);
+router.get('/token/:id', callController.createToken);
 
 // Only admin have permission to access for the below APIs 
 

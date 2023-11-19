@@ -6,13 +6,64 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-exports.sendMessage = async () => {
-    // Fetch the tokens from an external datastore (e.g. database)
-    const tokens = await getTokensFromDatastore();
-  
-    // Send a message to devices with the registered tokens
-    await admin.messaging().sendMulticast({
-      tokens, // ['token_1', 'token_2', ...]
-      data: { hello: 'world!' },
-    });
+exports.sendMessage = async (to, title, message, type = null, data = null) => {
+    const tokens = [to];
+    if(type != 1){
+        await admin.messaging().sendMulticast({
+            tokens,
+            data: {
+              notifee: JSON.stringify({
+                title: title,
+                body: message,
+                android: {
+                  channelId: 'default',
+                  smallIcon: 'push_icon',
+                  color: '#6EE7B7',
+                  sound: 'customsound',
+                  vibration: true,
+                  vibrationPattern: [300, 500],
+                  pressAction: {
+                    id: 'default',
+                  },
+                  actions: [
+                    {
+                      title: 'Mark as Read',
+                      pressAction: {
+                        id: 'read',
+                      },
+                    },
+                  ],
+                },
+              }),
+            },
+        });
+    }else {
+        await admin.messaging().sendMulticast({
+        tokens,
+        data: {
+          notifee: JSON.stringify({
+            title: title,
+            body: message,
+            data: data,
+            android: {
+              channelId: 'default',
+              smallIcon: 'push_icon',
+              color: '#6EE7B7',
+              lightUpScreen: true,
+              pressAction: {
+                id: 'default',
+              },
+            //   actions: [
+            //     {
+            //       title: 'Pick Up',
+            //       pressAction: {
+            //         id: 'read',
+            //       },
+            //     },
+            //   ],
+            },
+          }),
+        },
+      });
+    }
   }

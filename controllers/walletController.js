@@ -2,6 +2,7 @@ const flutterwave = require('../utils/flwFeatures');
 const Wallet = require('../models/walletModel');
 const User = require('../models/userModel');
 const pushController = require("./pushNotificationController");
+const fcmController = require("./fcmController");
 
 exports.history = async (req, res, next) => {
     try {
@@ -64,7 +65,7 @@ exports.verifyDeposit = async (req, res, next) => {
               });
             await User.updateOne({ _id: req.user._id }, { $inc: { balance: Number(data.charged_amount) } });
             const user = await User.findById(req.user._id);
-            pushController.pushNotification(user.deviceToken, 'Deposit Completed', `Your ₦${data.amount} deposit has been completed`);
+            fcmController.sendMessage(user.deviceToken, 'Deposit Completed', `Your ₦${data.amount} deposit has been completed`);
             res.status(200).json({
                 status: 'success',
                 wallet
@@ -108,7 +109,7 @@ exports.withdrawal = async (req, res, next) => {
         const withdraw = await flutterwave.initTransfer(data);
         await User.updateOne({ _id: req.user._id }, { $inc: { balance: -Number(req.body.amount) } });
         const user = await User.findById(req.user._id);
-        pushController.pushNotification(user.deviceToken, 'Withdrawal Completed', `Your ₦${req.body.amount} withdrawal has been completed`);
+        fcmController.sendMessage(user.deviceToken, 'Withdrawal Completed', `Your ₦${req.body.amount} withdrawal has been completed`);
         
         //if (deposit.status == "success") {
             res.status(200).json({

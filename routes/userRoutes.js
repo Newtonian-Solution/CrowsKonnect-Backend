@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const authController = require('./../controllers/authController');
-const callController = require('./../controllers/callController');
+const callController = require('./../controllers/fcmController');
 const pushController = require('../controllers/pushNotificationController');
 const flwController = require('../utils/flwFeatures');
 const smsController = require('../controllers/smsController')
@@ -23,7 +23,7 @@ router.post('/signup', authController.signup);
 router.post('/verify-image', authController.verifyImage);
 router.post('/verify-otp', authController.verifyOtp);
 
-router.get('/push', callController.createToken);
+router.get('/push', callController.sendMessage);
 
 // User Routes
 router.get('/:id', userController.getUser);

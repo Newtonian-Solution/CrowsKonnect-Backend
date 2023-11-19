@@ -2,6 +2,7 @@ const { promisify } = require("util");
 const User = require("../models/userModel");
 const Order = require("../models/orderModel");
 const pushController = require("./pushNotificationController");
+const fcmController = require("./fcmController");
 const AppError = require("../utils/appError");
 const sms = require("./smsController");
 const fs = require("fs/promises");
@@ -38,25 +39,25 @@ exports.applyOrder = async (req, res, next) => {
 
     switch(req.body.status) {
       case "1":
-        pushController.pushNotification(owner.deviceToken, 'Order Assigned', `Your Order (${doc.category}) has been assigned`);
+        fcmController.sendMessage(owner.deviceToken, 'Order Assigned', `Your Order (${doc.category}) has been assigned`);
         break;
       case "2":
         await sms.sendSMS(doc, owner.firstname, owner.phoneNumber, deliveryman.firstname);
-        pushController.pushNotification(owner.deviceToken, 'Order In-Progress', `Order (${doc.category}) Pick-Up confirmed`);
+        fcmController.sendMessage(owner.deviceToken, 'Order In-Progress', `Order (${doc.category}) Pick-Up confirmed`);
         break;
       case "3":
         if(doc.verifyCode == req.body.otp){
           next(new AppError(404, 'fail', 'Incorrect Code!'), req, res, next);
         }
         await User.updateOne({ _id: deliveryman._id }, { $inc: { pendingBalance: Number(doc.amount) } });
-        pushController.pushNotification(owner.deviceToken, 'Order Completed', `Your Order (${doc.category}) has been delivered successfully`);
-        pushController.pushNotification(deliveryman.deviceToken, 'Order Completed', `You've delivered Order (${doc.category}) successfully`);
+        fcmController.sendMessage(owner.deviceToken, 'Order Completed', `Your Order (${doc.category}) has been delivered successfully`);
+        fcmController.sendMessage(deliveryman.deviceToken, 'Order Completed', `You've delivered Order (${doc.category}) successfully`);
         break;
       case "4":
-        pushController.pushNotification(owner.deviceToken, 'Order Deleted', `Your Order (${doc.category}) has been deleted`);
+        fcmController.sendMessage(owner.deviceToken, 'Order Deleted', `Your Order (${doc.category}) has been deleted`);
         break;
       case "5":
-        pushController.pushNotification(deliveryman.deviceToken, 'Order Assigned', `Kindly confirm Order (${doc.category}) Pick-Up`);
+        fcmController.sendMessage(deliveryman.deviceToken, 'Order Assigned', `Kindly confirm Order (${doc.category}) Pick-Up`);
         break;
       default:
 
@@ -89,7 +90,7 @@ exports.order = async (req, res, next) => {
     await User.updateOne({ _id: req.user._id }, { $inc: { balance: -Number(req.body.amount) } });
 
     const owner = await User.findById(req.user._id);
-    pushController.pushNotification(owner.deviceToken, 'Order Created', `Your Order (${order.category}) has been created`);
+    fcmController.sendMessage(owner.deviceToken, 'Order Created', `Your Order (${order.category}) has been created`);
     const closestUsers = await User.find({
       location: {
         $near: {
@@ -103,7 +104,7 @@ exports.order = async (req, res, next) => {
     }).limit(5);
     if(closestUsers.length > 0){
       for(let users of closestUsers) {
-        await pushController.pushNotification(users.deviceToken, 'New Order Alert', `A new Order is near you. Open the App to pick it up.`);
+        await fcmController.sendMessage(users.deviceToken, 'New Order Alert', `A new Order is near you. Open the App to pick it up.`);
       }
     }
     res.status(201).json({
