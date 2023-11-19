@@ -14,14 +14,12 @@ exports.sendSMS = async (doc, name, pNo, deliveryman) => {
   });
   const text = `Hi ${doc.receiverName},
   A Package is on the way to YOU.
-  The one-time password (OTP) to claim the ownership is: ${otpCode}.
+  This one-time password (OTP) is to claim the ownership of the package: ${otpCode}.
   
-  Please use this OTP to confirm the order.
-  Do not disclose to anyone but the Delivery Man.
+  Do not disclose to anyone except the Delivery Man.
   
-  Thank you,
-  CrowsKonnect Team
-  Sender: ${name} ${pNo}
+  Thank you for using CrowsKonnect,
+  Package Sender: ${name} ${pNo}
   Delivery Man: ${deliveryman}`
   var data = new FormData();
   data.append('token', '44TIOwlHjVLTkaLZeXeJRfat7VnaBGaJldGt6Ex3mcmJ27JB3p');
