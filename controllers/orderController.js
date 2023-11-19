@@ -87,16 +87,16 @@ exports.order = async (req, res, next) => {
       receiverNumber: req.body.receiverNo,
       owner: req.user._id,
     });
-    await User.updateOne({ _id: req.user._id }, { $inc: { balance: -Number(req.body.amount) } });
-
+    
     const owner = await User.findById(req.user._id);
-    fcmController.sendMessage(owner.deviceToken, 'Order Created', `Your Order (${order.category}) has been created`);
+    await User.updateOne({ _id: req.user._id }, { $inc: { balance: -Number(req.body.amount) } });
+    fcmController.sendMessage(owner.deviceToken, 'Order Created', `Your Order (${req.body.category}) has been created`);
     const closestUsers = await User.find({
       location: {
         $near: {
           $geometry: {
             type: 'Point',
-            coordinates: [req.body.pickUp.lng, req.body.pickUp.lat],
+            coordinates: [req.body.pickUp.lat, req.body.pickUp.lng],
           },
           $maxDistance: 1000, 
         },
@@ -104,7 +104,9 @@ exports.order = async (req, res, next) => {
     }).limit(5);
     if(closestUsers.length > 0){
       for(let users of closestUsers) {
-        await fcmController.sendMessage(users.deviceToken, 'New Order Alert', `A new Order is near you. Open the App to pick it up.`);
+        if(users.deviceToken != owner.deviceToken){
+          await fcmController.sendMessage(users.deviceToken, 'New Order Alert', `A new Order is near you. Open the App to pick it up.`);
+        }
       }
     }
     res.status(201).json({

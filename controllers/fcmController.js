@@ -19,20 +19,6 @@ exports.sendMessage = async (to, title, message, type = null, data = null) => {
                   channelId: 'default',
                   smallIcon: 'push_icon',
                   color: '#6EE7B7',
-                  sound: 'customsound',
-                  vibration: true,
-                  vibrationPattern: [300, 500],
-                  pressAction: {
-                    id: 'default',
-                  },
-                  actions: [
-                    {
-                      title: 'Mark as Read',
-                      pressAction: {
-                        id: 'read',
-                      },
-                    },
-                  ],
                 },
               }),
             },
