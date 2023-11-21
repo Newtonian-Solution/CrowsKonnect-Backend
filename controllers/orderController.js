@@ -56,7 +56,7 @@ exports.applyOrder = async (req, res, next) => {
           new: true,
           runValidators: true
       });
-        //fcmController.sendMessage(owner.deviceToken, 'Order Completed', `Your Order (${doc.category}) has been delivered successfully`);
+        fcmController.sendMessage(owner.deviceToken, 'Order Completed', `Your Order (${doc.category}) has been delivered successfully`);
         fcmController.sendMessage(deliveryman.deviceToken, 'Order Completed', `You've delivered Order (${doc.category}) successfully`);
         break;
       case "4":
