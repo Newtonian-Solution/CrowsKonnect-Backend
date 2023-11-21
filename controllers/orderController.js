@@ -48,7 +48,7 @@ exports.applyOrder = async (req, res, next) => {
         fcmController.sendMessage(owner.deviceToken, 'Order In-Progress', `Order (${doc.category}) Pick-Up confirmed`);
         break;
       case "3":
-        if(doc.verifyCode == req.body.otp){
+        if(doc.verifyCode != req.body.otp){
           next(new AppError(200, 'fail', 'Incorrect Code!'), req, res, next);
         }
         await User.updateOne({ _id: deliveryman._id }, { $inc: { pendingBalance: Number(doc.amount) } });
