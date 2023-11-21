@@ -28,7 +28,9 @@ exports.applyOrder = async (req, res, next) => {
           new: true,
           runValidators: true
       });
-  }
+    } else {
+      doc = await Order.findById(req.params.id);
+    }
 
     if (!doc) {
         return next(new AppError(401, 'fail', 'No order found with that id'), req, res, next);
@@ -50,6 +52,10 @@ exports.applyOrder = async (req, res, next) => {
           next(new AppError(200, 'fail', 'Incorrect Code!'), req, res, next);
         }
         await User.updateOne({ _id: deliveryman._id }, { $inc: { pendingBalance: Number(doc.amount) } });
+        await Order.findByIdAndUpdate(req.params.id, req.body, {
+          new: true,
+          runValidators: true
+      });
         fcmController.sendMessage(owner.deviceToken, 'Order Completed', `Your Order (${doc.category}) has been delivered successfully`);
         fcmController.sendMessage(deliveryman.deviceToken, 'Order Completed', `You've delivered Order (${doc.category}) successfully`);
         break;
