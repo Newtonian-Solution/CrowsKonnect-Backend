@@ -24,6 +24,7 @@ exports.sendMessage = async (to, title, message, type = null, data = null) => {
             },
         });
     }else {
+      console.log(data)
         await admin.messaging().sendMulticast({
         tokens,
         data: {

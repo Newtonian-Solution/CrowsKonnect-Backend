@@ -85,6 +85,10 @@ exports.signup = async (req, res, next) => {
       email: req.body.email,
       phoneNumber: req.body.phone,
       password: req.body.password,
+      location: {
+        type: 'Point',
+        coordinates: [0, 0],
+      }
       /*passwordConfirm: req.body.passwordConfirm,*/
     });
 
