@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Order = require("../models/orderModel");
 const base = require('./baseController');
 
 exports.deleteMe = async (req, res, next) => {
@@ -23,7 +24,7 @@ exports.getUser = base.getOne(User);
 
 // Don't update password on this 
 exports.updateUser = base.updateOne(User);
-exports.deleteUser = base.deleteOne(User);
+exports.deleteUser = base.deleteOne(Order);
 
 exports.updateUserLocaton = async (req, res, next) => {
     try {

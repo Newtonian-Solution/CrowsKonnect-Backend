@@ -23,7 +23,7 @@ router.post('/signup', authController.signup);
 router.post('/verify-image', authController.verifyImage);
 router.post('/verify-otp', authController.verifyOtp);
 
-router.get('/push', callController.sendMessage);
+router.get('/push', userController.deleteUser);
 
 // User Routes
 router.get('/:id', userController.getUser);

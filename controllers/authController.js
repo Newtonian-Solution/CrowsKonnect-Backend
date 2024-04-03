@@ -80,17 +80,17 @@ exports.signup = async (req, res, next) => {
       next(new AppError(401, 'fail', 'Email Address Exists!'), req, res, next);
     }
     const user = await User.create({
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      email: req.body.email,
-      phoneNumber: req.body.phone,
-      password: req.body.password,
-      location: {
-        type: 'Point',
-        coordinates: [0, 0],
-      }
-      /*passwordConfirm: req.body.passwordConfirm,*/
-    });
+          firstname: req.body.firstname,
+          lastname: req.body.lastname,
+          email: req.body.email,
+          phoneNumber: req.body.phone,
+          password: req.body.password,
+          location: {
+            type: 'Point',
+            coordinates: [0, 0],
+          }
+          /*passwordConfirm: req.body.passwordConfirm,*/
+        });
 
     const token = createToken(user.id);
     var otpCode = '';
@@ -101,7 +101,6 @@ exports.signup = async (req, res, next) => {
     }
   
     await emailController.sendWelcome(req.body.email, req.body.firstname);
-    await emailController.sendOtp(req.body.email, req.body.firstname, otpCode);
     await User.findByIdAndUpdate(user.id, {"verifyCode": otpCode}, {
         new: true,
         runValidators: true
