@@ -6,6 +6,7 @@ const path = require("path");
 const fs = require("fs/promises");
 const emailController = require("./emailController");
 const uploadController = require("./uploadController");
+const crypto = require("crypto");
 
 
 const createToken = id => {
@@ -118,6 +119,16 @@ exports.signup = async (req, res, next) => {
     next(err);
   }
 };
+// BvEEMEFeufgwVV9K
+exports.webhook = async (req, res, next) => {
+  const hash = crypto.createHmac('sha256', secret).update(JSON.stringify(req.body)).digest('hex');
+
+  if (hash == req.headers['x-dojah-signature']) {
+  const event = req.body;
+    console.log(event);  
+  }
+  res.send(200);
+}
 
 exports.verifyImage = async (req, res, next) => {
   try {
