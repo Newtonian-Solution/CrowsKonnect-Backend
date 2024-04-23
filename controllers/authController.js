@@ -119,10 +119,10 @@ exports.webhook = async (req, res, next) => {
     .digest("hex");
 
   if (hash == req.headers["x-dojah-signature"]) {
-    const { e } = req.body;
-    if (e.verificationStatus == "Completed") {
+    const { webhookData } = req.body;
+    if (webhookData.verificationStatus == "Completed") {
       const checkUser = await User.findOne({
-        email: e.data.email.data.email,
+        email: webhookData.data.email.data.email,
       });
       if (checkUser) {
         next(
@@ -133,11 +133,11 @@ exports.webhook = async (req, res, next) => {
         );
       }
       await User.create({
-        firstname: e.userDetails.first_name,
-        lastname: e.userDetails.last_ame,
-        email: e.data.email.data.email,
-        phoneNumber: e.userDetails.phone_number1,
-        image: e.userDetails.image_url,
+        firstname: webhookData.userDetails.first_name,
+        lastname: webhookData.userDetails.last_ame,
+        email: webhookData.data.email.data.email,
+        phoneNumber: webhookData.userDetails.phone_number1,
+        image: webhookData.userDetails.image_url,
         location: {
           type: "Point",
           coordinates: [0, 0],
@@ -147,11 +147,11 @@ exports.webhook = async (req, res, next) => {
     }
   }
   res.status(200).json({
-    firstname: e.userDetails.first_name,
-    lastname: e.userDetails.last_ame,
-    email: e.data.email.data.email,
-    phoneNumber: e.userDetails.phone_number1,
-    image: e.userDetails.image_url,
+    firstname: webhookData.userDetails.first_name,
+    lastname: webhookData.userDetails.last_ame,
+    email: webhookData.data.email.data.email,
+    phoneNumber: webhookData.userDetails.phone_number1,
+    image: webhookData.userDetails.image_url,
     location: {
       type: "Point",
       coordinates: [0, 0],
