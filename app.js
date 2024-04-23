@@ -22,12 +22,12 @@ app.use(cors());
 app.use(helmet());
 
 // Limit request from the same API 
-// const limiter = rateLimit({
-//     max: 1500,
-//     windowMs: 60 * 60 * 1000,
-//     message: 'Too Many Request from this IP, please try again in an hour'
-// });
-// app.use('/api', limiter);
+const limiter = rateLimit({
+    max: 100,
+    windowMs: 60 * 60 * 1000,
+    message: 'Too Many Request from this IP, please try again in an hour'
+});
+app.use('/api', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '25mb', extended: true }));
