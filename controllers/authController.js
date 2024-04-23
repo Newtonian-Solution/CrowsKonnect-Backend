@@ -153,7 +153,7 @@ exports.webhook = async (req, res, next) => {
       });
     }
   }
-  res.sendStatus(401);
+  res.sendStatus(200);
 };
 
 exports.verifyImage = async (req, res, next) => {
