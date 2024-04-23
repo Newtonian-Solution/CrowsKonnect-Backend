@@ -119,7 +119,7 @@ exports.webhook = async (req, res, next) => {
     .digest("hex");
 
   if (hash == req.headers["x-dojah-signature"]) {
-    const webhookData = req.body;
+    const { webhookData } = req.body;
     if (webhookData.verificationStatus == "Completed") {
       const checkUser = await User.findOne({
         email: webhookData.data.email.data.email,
