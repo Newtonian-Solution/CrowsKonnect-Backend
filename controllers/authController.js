@@ -129,7 +129,7 @@ exports.webhook = async (req, res, next) => {
       }
       await User.create({
         firstname: webhookData.userDetails.first_name,
-        lastname: webhookData.userDetails.last_ame,
+        lastname: webhookData.userDetails.last_name,
         email: webhookData.data.email.data.email,
         phoneNumber: webhookData.userDetails.phone_number1,
         image: webhookData.userDetails.image_url,
@@ -141,7 +141,7 @@ exports.webhook = async (req, res, next) => {
       });
       res.status(200).json({
         firstname: webhookData.userDetails.first_name,
-        lastname: webhookData.userDetails.last_ame,
+        lastname: webhookData.userDetails.last_name,
         email: webhookData.data.email.data.email,
         phoneNumber: webhookData.userDetails.phone_number1,
         image: webhookData.userDetails.image_url,
