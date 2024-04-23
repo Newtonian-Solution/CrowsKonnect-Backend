@@ -133,11 +133,11 @@ exports.webhook = async (req, res, next) => {
         );
       }
       await User.create({
-        firstname: e.data["user-data"].data.firstName,
-        lastname: e.data["user-data"].data.lastName,
+        firstname: e.userDetails.first_name,
+        lastname: e.userDetails.last_ame,
         email: e.data.email.data.email,
-        phoneNumber: e.data["phone-number"].data.phone,
-        password: req.body.password,
+        phoneNumber: e.userDetails.phone_number1,
+        image: e.userDetails.image_url,
         location: {
           type: "Point",
           coordinates: [0, 0],
@@ -147,11 +147,11 @@ exports.webhook = async (req, res, next) => {
     }
   }
   res.status(200).json({
-    firstname: e.data["user-data"].data.firstName,
-    lastname: e.data["user-data"].data.lastName,
+    firstname: e.userDetails.first_name,
+    lastname: e.userDetails.last_ame,
     email: e.data.email.data.email,
-    phoneNumber: e.data["phone-number"].data.phone,
-    password: req.body.password,
+    phoneNumber: e.userDetails.phone_number1,
+    image: e.userDetails.image_url,
     location: {
       type: "Point",
       coordinates: [0, 0],
