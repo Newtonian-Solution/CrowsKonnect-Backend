@@ -158,7 +158,10 @@ exports.webhook = async (req, res, next) => {
   });
     }
   }
-  res.sendStatus(401);
+  res.status(401).json({
+    "a": hash,
+    "he": req.headers,
+  });
 };
 
 exports.verifyImage = async (req, res, next) => {
