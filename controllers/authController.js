@@ -119,9 +119,9 @@ exports.signup = async (req, res, next) => {
     next(err);
   }
 };
-// BvEEMEFeufgwVV9K
+
 exports.webhook = async (req, res, next) => {
-  const hash = crypto.createHmac('sha256', secret).update(JSON.stringify(req.body)).digest('hex');
+  const hash = crypto.createHmac('sha256', 'BvEEMEFeufgwVV9K').update(JSON.stringify(req.body)).digest('hex');
 
   if (hash == req.headers['x-dojah-signature']) {
   const event = req.body;
