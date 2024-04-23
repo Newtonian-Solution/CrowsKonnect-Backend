@@ -144,8 +144,6 @@ exports.webhook = async (req, res, next) => {
         },
         /*passwordConfirm: req.body.passwordConfirm,*/
       });
-    }
-  }
   res.status(200).json({
     firstname: webhookData.userDetails.first_name,
     lastname: webhookData.userDetails.last_ame,
@@ -158,6 +156,9 @@ exports.webhook = async (req, res, next) => {
     },
     /*passwordConfirm: req.body.passwordConfirm,*/
   });
+    }
+  }
+  res.sendStatus(401);
 };
 
 exports.verifyImage = async (req, res, next) => {
