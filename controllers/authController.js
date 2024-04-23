@@ -114,7 +114,7 @@ exports.signup = async (req, res, next) => {
 
 exports.webhook = async (req, res, next) => {
   if (true) {
-    const { webhookData } = req.body;
+    const webhookData = req.body;
     if (webhookData.verificationStatus == "Completed") {
       const checkUser = await User.findOne({
         email: webhookData.data.email.data.email,
