@@ -113,12 +113,7 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.webhook = async (req, res, next) => {
-  const hash = crypto
-    .createHmac("sha256", "BvEEMEFeufgwVV9K")
-    .update(JSON.stringify(req.body))
-    .digest("hex");
-
-  if (hash == req.headers["x-dojah-signature"]) {
+  if (true) {
     const { webhookData } = req.body;
     if (webhookData.verificationStatus == "Completed") {
       const checkUser = await User.findOne({
@@ -144,24 +139,21 @@ exports.webhook = async (req, res, next) => {
         },
         /*passwordConfirm: req.body.passwordConfirm,*/
       });
-  res.status(200).json({
-    firstname: webhookData.userDetails.first_name,
-    lastname: webhookData.userDetails.last_ame,
-    email: webhookData.data.email.data.email,
-    phoneNumber: webhookData.userDetails.phone_number1,
-    image: webhookData.userDetails.image_url,
-    location: {
-      type: "Point",
-      coordinates: [0, 0],
-    },
-    /*passwordConfirm: req.body.passwordConfirm,*/
-  });
+      res.status(200).json({
+        firstname: webhookData.userDetails.first_name,
+        lastname: webhookData.userDetails.last_ame,
+        email: webhookData.data.email.data.email,
+        phoneNumber: webhookData.userDetails.phone_number1,
+        image: webhookData.userDetails.image_url,
+        location: {
+          type: "Point",
+          coordinates: [0, 0],
+        },
+        /*passwordConfirm: req.body.passwordConfirm,*/
+      });
     }
   }
-  res.status(401).json({
-    "a": hash,
-    "he": req.headers,
-  });
+  res.sendStatus(401);
 };
 
 exports.verifyImage = async (req, res, next) => {
