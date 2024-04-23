@@ -120,12 +120,13 @@ exports.webhook = async (req, res, next) => {
         email: webhookData.data.email.data.email,
       });
       if (checkUser) {
-        next(
-          new AppError(401, "fail", "Email Address Exists!"),
-          req,
-          res,
-          next
-        );
+        res.sendStatus(200);
+        // next(
+        //   new AppError(401, "fail", "Email Address Exists!"),
+        //   req,
+        //   res,
+        //   next
+        // );
       }
       await User.create({
         firstname: webhookData.userDetails.first_name,
