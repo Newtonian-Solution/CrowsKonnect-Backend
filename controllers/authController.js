@@ -80,7 +80,7 @@ exports.signup = async (req, res, next) => {
     const checkUser = await User.findOne({
       email: req.body.email,
     });
-    if (checkUser) {
+    if (!checkUser) {
       next(
         new AppError(401, "fail", "Email Address Does Not Exists!"),
         req,
