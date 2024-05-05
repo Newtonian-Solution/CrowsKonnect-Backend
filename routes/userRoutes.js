@@ -21,7 +21,7 @@ router.post('/login', authController.login);
 router.post('/signup', authController.signup);
 router.post('/webhook', authController.webhook);
 
-router.post('/verify-image', authController.verifyImage);
+// router.post('/verify-image', authController.verifyImage);
 router.post('/verify-otp', authController.verifyOtp);
 
 router.get('/push', userController.deleteUser);

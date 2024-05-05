@@ -78,33 +78,39 @@ exports.login = async (req, res, next) => {
 exports.signup = async (req, res, next) => {
   try {
     const checkUser = await User.findOne({
-      email: req.body.email,
+      "email": req.body.email,
     });
-    if (!checkUser) {
-      next(
-        new AppError(401, "fail", "Email Address Does Not Exists!"),
-        req,
-        res,
-        next
-      );
+    if(checkUser) {
+      next(new AppError(401, 'fail', 'Email Address Exists!'), req, res, next);
     }
+    const user = await User.create({
+          firstname: req.body.firstname,
+          lastname: req.body.lastname,
+          email: req.body.email,
+          phoneNumber: req.body.phone,
+          password: req.body.password,
+          location: {
+            type: 'Point',
+            coordinates: [0, 0],
+          }
+          /*passwordConfirm: req.body.passwordConfirm,*/
+        });
 
-    await User.findByIdAndUpdate(
-      checkUser.id,
-      { password: req.body.password, status: 1 },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const token = createToken(user.id);
+    // var otpCode = '';
+
     await emailController.sendWelcome(req.body.email, req.body.firstname);
-    checkUser.password = undefined;
-    const token = createToken(checkUser.id);
+    // await emailController.sendOtp(req.body.email, req.body.firstname, otpCode);
+    // await User.findByIdAndUpdate(user.id, {"verifyCode": otpCode}, {
+    //     new: true,
+    //     runValidators: true
+    // });
+    user.password = undefined;
     res.status(201).json({
       status: "success",
       token,
       data: {
-        checkUser,
+        user,
       },
     });
   } catch (err) {
@@ -112,97 +118,68 @@ exports.signup = async (req, res, next) => {
   }
 };
 
+
 exports.webhook = async (req, res, next) => {
-  if (true) {
     const webhookData = req.body;
     if (webhookData.verificationStatus == "Completed") {
-      const checkUser = await User.findOne({
-        email: webhookData.data.email.data.email,
-      });
-      if (checkUser) {
-        res.sendStatus(200);
-        // next(
-        //   new AppError(401, "fail", "Email Address Exists!"),
-        //   req,
-        //   res,
-        //   next
-        // );
-      }
-      await User.create({
-        firstname: webhookData.userDetails.first_name,
-        lastname: webhookData.userDetails.last_name,
-        email: webhookData.data.email.data.email,
-        phoneNumber: webhookData.userDetails.phone_number1,
-        image: webhookData.userDetails.image_url,
-        location: {
-          type: "Point",
-          coordinates: [0, 0],
-        },
-        /*passwordConfirm: req.body.passwordConfirm,*/
-      });
-      res.status(200).json({
-        firstname: webhookData.userDetails.first_name,
-        lastname: webhookData.userDetails.last_name,
-        email: webhookData.data.email.data.email,
-        phoneNumber: webhookData.userDetails.phone_number1,
-        image: webhookData.userDetails.image_url,
-        location: {
-          type: "Point",
-          coordinates: [0, 0],
-        },
-        /*passwordConfirm: req.body.passwordConfirm,*/
-      });
+      await User.findByIdAndUpdate(
+        checkUser.id,
+        { image:  webhookData.userDetails.image_url, status: 1 },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
     }
-  }
   res.sendStatus(200);
 };
 
-exports.verifyImage = async (req, res, next) => {
-  try {
-    const image = req.body.picture;
+// exports.verifyImage = async (req, res, next) => {
+//   try {
+//     const image = req.body.picture;
 
-    const buffer = Buffer.from(image, "base64");
-    let token = req.headers.authorization.split(" ")[1];
-    const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    const targetPath = path.join(__dirname, `../upload/${decode.id}.png`);
+//     const buffer = Buffer.from(image, "base64");
+//     let token = req.headers.authorization.split(" ")[1];
+//     const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+//     const targetPath = path.join(__dirname, `../upload/${decode.id}.png`);
 
-    const uploadImage = await uploadController.uploadImage(buffer);
-    const user = await User.findOne({ _id: decode.id });
-    if (!user) {
-    }
-    var updateData = {
-      image: uploadImage,
-    };
-    if (user.status == 1) {
-      updateData = {
-        active: true,
-        image: uploadImage,
-      };
-    }
-    const updateUser = await User.findByIdAndUpdate(user.id, updateData, {
-      new: true,
-      runValidators: true,
-    });
-    if (!user) {
-      return next(
-        new AppError(404, "fail", "No document found with that id"),
-        req,
-        res,
-        next
-      );
-    }
+//     const uploadImage = await uploadController.uploadImage(buffer);
+//     const user = await User.findOne({ _id: decode.id });
+//     if (!user) {
+//     }
+//     var updateData = {
+//       image: uploadImage,
+//     };
+//     if (user.status == 1) {
+//       updateData = {
+//         active: true,
+//         image: uploadImage,
+//       };
+//     }
+//     const updateUser = await User.findByIdAndUpdate(user.id, updateData, {
+//       new: true,
+//       runValidators: true,
+//     });
+//     if (!user) {
+//       return next(
+//         new AppError(404, "fail", "No document found with that id"),
+//         req,
+//         res,
+//         next
+//       );
+//     }
 
-    res.status(201).json({
-      status: "success",
-      token,
-      data: {
-        updateUser,
-      },
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+//     res.status(201).json({
+//       status: "success",
+//       token,
+//       data: {
+//         updateUser,
+//       },
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 exports.verifyOtp = async (req, res, next) => {
   try {
