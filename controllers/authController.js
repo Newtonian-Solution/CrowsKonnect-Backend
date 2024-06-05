@@ -120,10 +120,13 @@ exports.signup = async (req, res, next) => {
 
 
 exports.webhook = async (req, res, next) => {
-    const webhookData = req.body;
-    if (webhookData.verificationStatus == "Completed") {
+  const webhookData = req.body;
+  const user = await User.findOne({
+    email: webhookData.data.email.data.email,
+  });
+  if (webhookData.verificationStatus == "Completed") {
       await User.findByIdAndUpdate(
-        checkUser.id,
+        user._id,
         { image:  webhookData.userDetails.image_url, status: 1 },
         {
           new: true,
