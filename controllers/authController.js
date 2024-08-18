@@ -165,7 +165,6 @@ exports.verify = async (req, res, next) => {
 
     res.status(201).json({
       status: "success",
-      token,
       data: {
         updateUser,
       },
