@@ -150,7 +150,7 @@ exports.verify = async (req, res, next) => {
      const updateData = {
         status: 1,
       };
-    const updateUser = await User.findByIdAndUpdate(user.id, updateData, {
+    const updateUser = await User.findByIdAndUpdate(user, updateData, {
       new: true,
       runValidators: true,
     });
