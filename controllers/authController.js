@@ -141,12 +141,12 @@ exports.webhook = async (req, res, next) => {
 exports.verify = async (req, res, next) => {
   try {
 
-    let token = req.headers.authorization.split(" ")[1];
-    const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    const user = await User.findOne({ _id: decode.id });
-    if (!user) {
+    // let token = req.headers.authorization.split(" ")[1];
+    // const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const user = req.params.id; //await User.findOne({ _id: decode.id });
+    // if (!user) {
       
-    }
+    // }
      const updateData = {
         status: 1,
       };

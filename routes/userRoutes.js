@@ -22,6 +22,7 @@ router.post('/signup', authController.signup);
 router.post('/webhook', authController.webhook);
 
 router.post('/verify-otp', authController.verifyOtp);
+router.post('/verify/:id', authController.verify);
 
 router.get('/push', userController.deleteUser);
 
@@ -30,7 +31,6 @@ router.get('/:id', userController.getUser);
 
 // Protect all routes after this middleware
 router.use(authController.protect);
-router.post('/verify', authController.verify);
 router.post('/update-location', userController.updateUserLocaton);
 router.post('/wallet/:id', userController.updateUser);
 router.get('/bvn/:id', flwController.getBanks);
