@@ -37,16 +37,17 @@ exports.login = async (req, res, next) => {
     // check if user exist and password is correct
     const user = await User.findOne({
       email,
-    }).select("+password");
+    });
 
-    if (!user || !(await user.correctPassword(password, user.password))) {
-      return next(
-        new AppError(401, "fail", "Email or Password is wrong"),
-        req,
-        res,
-        next
-      );
-    }
+    // if (!user || !(await user.correctPassword(password, user.password))) {
+    //   return next(
+    //     new AppError(401, "fail", "Email or Password is wrong"),
+    //     req,
+    //     res,
+    //     next
+    //   );
+    // }
+    console.log(user)
 
     const data = await User.findByIdAndUpdate(
       user._id,
@@ -133,56 +134,46 @@ exports.webhook = async (req, res, next) => {
           runValidators: true,
         }
       );
-    }
+  }
   res.sendStatus(200);
 };
 
-// exports.verifyImage = async (req, res, next) => {
-//   try {
-//     const image = req.body.picture;
+exports.verify = async (req, res, next) => {
+  try {
 
-//     const buffer = Buffer.from(image, "base64");
-//     let token = req.headers.authorization.split(" ")[1];
-//     const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-//     const targetPath = path.join(__dirname, `../upload/${decode.id}.png`);
+    let token = req.headers.authorization.split(" ")[1];
+    const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ _id: decode.id });
+    if (!user) {
+      
+    }
+     const updateData = {
+        status: 1,
+      };
+    const updateUser = await User.findByIdAndUpdate(user.id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user) {
+      return next(
+        new AppError(404, "fail", "No document found with that id"),
+        req,
+        res,
+        next
+      );
+    }
 
-//     const uploadImage = await uploadController.uploadImage(buffer);
-//     const user = await User.findOne({ _id: decode.id });
-//     if (!user) {
-//     }
-//     var updateData = {
-//       image: uploadImage,
-//     };
-//     if (user.status == 1) {
-//       updateData = {
-//         active: true,
-//         image: uploadImage,
-//       };
-//     }
-//     const updateUser = await User.findByIdAndUpdate(user.id, updateData, {
-//       new: true,
-//       runValidators: true,
-//     });
-//     if (!user) {
-//       return next(
-//         new AppError(404, "fail", "No document found with that id"),
-//         req,
-//         res,
-//         next
-//       );
-//     }
-
-//     res.status(201).json({
-//       status: "success",
-//       token,
-//       data: {
-//         updateUser,
-//       },
-//     });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+    res.status(201).json({
+      status: "success",
+      token,
+      data: {
+        updateUser,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 exports.verifyOtp = async (req, res, next) => {
   try {
