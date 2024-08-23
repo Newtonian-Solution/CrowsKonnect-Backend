@@ -7,7 +7,8 @@ admin.initializeApp({
 });
 
 exports.sendMessage = async (to, title, message, type = null, data = null) => {
-    const tokens = [to];
+  const tokens = [to];
+  console.log(tokens)
     if(type != 1){
         await admin.messaging().sendMulticast({
             tokens,

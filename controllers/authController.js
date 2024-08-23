@@ -39,15 +39,14 @@ exports.login = async (req, res, next) => {
       email,
     });
 
-    // if (!user || !(await user.correctPassword(password, user.password))) {
-    //   return next(
-    //     new AppError(401, "fail", "Email or Password is wrong"),
-    //     req,
-    //     res,
-    //     next
-    //   );
-    // }
-    console.log(user)
+    if (!user || !(await user.correctPassword(password, user.password))) {
+      return next(
+        new AppError(401, "fail", "Email or Password is wrong"),
+        req,
+        res,
+        next
+      );
+    }
 
     const data = await User.findByIdAndUpdate(
       user._id,
