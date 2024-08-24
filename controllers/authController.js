@@ -40,12 +40,9 @@ exports.login = async (req, res, next) => {
     });
 
     if (!user || !(await user.correctPassword(password, user.password))) {
-      return next(
-        new AppError(401, "fail", "Email or Password is wrong"),
-        req,
-        res,
-        next
-      );
+      res.status(200).json({
+        status: "error",
+      });
     }
 
     const data = await User.findByIdAndUpdate(
